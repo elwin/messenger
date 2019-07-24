@@ -17,6 +17,8 @@ type App struct {
 	bot    *telegram.BotAPI
 }
 
+var messages []string
+
 func main() {
 
 	app := &App{}
@@ -42,6 +44,8 @@ func main() {
 
 			logger.Info("Received message")
 
+			messages = append(messages, update.Message.Text)
+
 			text := "shut the fuck up, " + update.Message.Chat.FirstName + "!"
 
 			if update.Message.Text == "p==np?" || update.Message.Text == "p=np?" {
@@ -65,7 +69,7 @@ func main() {
 
 func home(c *gin.Context) {
 	c.JSON(200, gin.H{
-		"message": "Welcome!",
+		"message": messages,
 	})
 }
 
@@ -84,7 +88,7 @@ func SetupTelegram(app *App) (*telegram.BotAPI, telegram.UpdatesChannel) {
 		app.logger.Fatal("Failed to initialize Telegram Bot with API Key")
 	}
 
-	url := "https://76641391.ngrok.io/webhook"
+	url := config.Telegram.WebhookHost + "/webhook"
 
 	ch := make(chan telegram.Update, bot.Buffer)
 

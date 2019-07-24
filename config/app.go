@@ -16,7 +16,8 @@ var (
 	}
 
 	Telegram struct {
-		Token string
+		Token       string
+		WebhookHost string
 	}
 )
 
@@ -33,4 +34,5 @@ func init() {
 	App.Url = os.Getenv("APP_URL")
 
 	Telegram.Token = os.Getenv("TELEGRAM_KEY")
+	Telegram.WebhookHost = os.Getenv("TELEGRAM_URL")
 }
