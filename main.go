@@ -5,6 +5,8 @@ import (
 	"io/ioutil"
 	"math/rand"
 
+	"github.com/gin-gonic/autotls"
+
 	"github.com/elwin/messenger/config"
 	"github.com/gin-gonic/gin"
 	telegram "github.com/go-telegram-bot-api/telegram-bot-api"
@@ -64,7 +66,7 @@ func main() {
 		}
 	}()
 
-	app.router.Run(":4444")
+	autotls.Run(app.router)
 }
 
 func home(c *gin.Context) {
