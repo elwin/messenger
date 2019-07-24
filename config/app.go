@@ -1,8 +1,12 @@
 package config
 
 import (
+	"fmt"
 	"os"
 
+	flags "github.com/jessevdk/go-flags"
+
+	_ "github.com/jessevdk/go-flags"
 	"github.com/joho/godotenv"
 	"github.com/sirupsen/logrus"
 )
@@ -21,8 +25,24 @@ var (
 	}
 )
 
+var opts struct {
+	Env string `short:"e" long:"env" description:"Set path of .env"`
+}
+
 func init() {
-	err := godotenv.Load()
+
+	_, err := flags.Parse(&opts)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	if opts.Env == "" {
+		err = godotenv.Load()
+	} else {
+		err = godotenv.Load(opts.Env)
+	}
+
 	if err != nil {
 		logrus.Fatal("Error loading config file: ", err)
 	}
