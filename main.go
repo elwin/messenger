@@ -48,13 +48,17 @@ func main() {
 			logger.Info("Received message")
 
 			updateMsg := update.Message.Text
-			var text string
+			var reply string
 
-			if strings.Contains(updateMsg, "?") {
+			if updateMsg == "/start" {
+
+				reply = "Hi & Welcome! Here you can ask questions and get a reply or feed new answers to the system."
+
+			} else if strings.Contains(updateMsg, "?") {
 				if len(answers) > 0 {
-					text = answers[rand.Intn(len(answers))]
+					reply = answers[rand.Intn(len(answers))]
 				} else {
-					text = "I don't really know tbh"
+					reply = "I don't really know tbh"
 				}
 			} else {
 				answers = append(answers, updateMsg)
@@ -66,10 +70,10 @@ func main() {
 					"whatever",
 					"i also heard that!",
 				}
-				text = replies[rand.Intn(len(replies))]
+				reply = replies[rand.Intn(len(replies))]
 			}
 
-			message := telegram.NewMessage(update.Message.Chat.ID, text)
+			message := telegram.NewMessage(update.Message.Chat.ID, reply)
 			_, err := app.bot.Send(message)
 			if err != nil {
 				logger.Error("Failed to send reply")
