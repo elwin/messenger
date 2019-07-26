@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"math/rand"
+	"strings"
 
 	"github.com/gin-gonic/autotls"
 
@@ -19,7 +20,7 @@ type App struct {
 	bot    *telegram.BotAPI
 }
 
-var messages []string
+var answers []string
 
 func main() {
 
@@ -46,16 +47,26 @@ func main() {
 
 			logger.Info("Received message")
 
-			messages = append(messages, update.Message.Text)
+			updateMsg := update.Message.Text
+			var text string
 
-			text := "shut the fuck up, " + update.Message.Chat.FirstName + "!"
-
-			if update.Message.Text == "p==np?" || update.Message.Text == "p=np?" {
-				if rand.Intn(2) == 1 {
-					text = "Wahrschinli nid"
+			if strings.Contains(updateMsg, "?") {
+				if len(answers) > 0 {
+					text = answers[rand.Intn(len(answers))]
 				} else {
-					text = "Auä scho"
+					text = "I don't really know tbh"
 				}
+			} else {
+				answers = append(answers, updateMsg)
+				replies := [...]string{
+					"mhm",
+					"yeah totally",
+					"are you sure?",
+					"well if you say so",
+					"whatever",
+					"i also heard that!",
+				}
+				text = replies[rand.Intn(len(replies))]
 			}
 
 			message := telegram.NewMessage(update.Message.Chat.ID, text)
@@ -71,7 +82,7 @@ func main() {
 
 func home(c *gin.Context) {
 	c.JSON(200, gin.H{
-		"message": messages,
+		"answers": answers,
 	})
 }
 
